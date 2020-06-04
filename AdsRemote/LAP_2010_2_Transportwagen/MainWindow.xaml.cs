@@ -1,28 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
 namespace LAP_2010_2_Transportwagen
 {
-    /// <summary>
-    /// Interaktionslogik für MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        public bool DebugWindowAktiv { get; set; }
+        public SetManual.SetManual SetManualWindow { get; set; }
+
+         private readonly ViewModel.ViewModel viewModel;
+
         public MainWindow()
         {
+            viewModel = new ViewModel.ViewModel(this);
+         
             InitializeComponent();
+            DataContext = viewModel;
+
+        
+            if (System.Diagnostics.Debugger.IsAttached) btnDebugWindow.Visibility = System.Windows.Visibility.Visible;
+            else btnDebugWindow.Visibility = System.Windows.Visibility.Hidden;
+        }
+
+        private void DebugWindowOeffnen(object sender, RoutedEventArgs e)
+        {
+            DebugWindowAktiv = true;
+            SetManualWindow = new SetManual.SetManual(viewModel);
+            SetManualWindow.Show();
         }
     }
 }
