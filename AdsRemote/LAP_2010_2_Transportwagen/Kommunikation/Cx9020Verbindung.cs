@@ -16,6 +16,8 @@ namespace LAP_2010_2_Transportwagen.Kommunikation
             IpAdressen cx9020Client;
             PLC cx9020;
 
+            status = "Keine Verbindung!";
+
             cx9020Client = JsonConvert.DeserializeObject<IpAdressen>(File.ReadAllText(@"Kommunikation/IpAdressen.json"));
 
 
@@ -23,7 +25,7 @@ namespace LAP_2010_2_Transportwagen.Kommunikation
             cx9020.DeviceReady += Cx9020DeviceReady;
             cx9020.DeviceLost += Cx9020DeviceLost;
             
-            Kommunikation = cx9020.Class<LAP_2010_2_Transportwagen.Kommunikation.Kommunikation>();
+            Kommunikation = cx9020.Class<Kommunikation>();
         }
 
         internal string GetStatus() => status;
