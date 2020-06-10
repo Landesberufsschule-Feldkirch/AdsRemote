@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -46,6 +49,10 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="TwinCAT.Ads, Version=4.2.141.0, Culture=neutral, PublicKeyToken=180016cd49e5e8c3, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\TwinCAT\AdsApi\.NET\v4.0.30319\TwinCAT.Ads.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -55,6 +62,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Kommunikation\Cx9020Verbindung.cs" />
+    <Compile Include="Kommunikation\IpAdressen.cs" />
+    <Compile Include="Kommunikation\Kommunikation.cs" />
     <Compile Include="SetManual\SetManual.xaml.cs">
       <DependentUpon>SetManual.xaml</DependentUpon>
     </Compile>
@@ -97,6 +107,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Kommunikation\IpAdressen.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -112,5 +126,16 @@
   <ItemGroup>
     <Folder Include="Cx9020\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AdsRemote\AdsRemote.csproj">
+      <Project>{53650485-fa17-411e-9016-adbce60a9417}</Project>
+      <Name>AdsRemote</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties kommunikation_4ipadressen_1json__JsonSchema="https://json.schemastore.org/config" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

@@ -5,10 +5,10 @@
 
     public class VisuAnzeigen : INotifyPropertyChanged
     {
-        private readonly LAP_2010_2_Transportwagen.Model.Transportwagen transportwagen;
+        private readonly Model.Transportwagen transportwagen;
         private readonly MainWindow mainWindow;
 
-        public VisuAnzeigen(MainWindow mw, LAP_2010_2_Transportwagen.Model.Transportwagen tw)
+        public VisuAnzeigen(MainWindow mw, Model.Transportwagen tw)
         {
             mainWindow = mw;
             transportwagen = tw;
@@ -48,16 +48,16 @@
 
             while (true)
             {
-                FarbeF1(transportwagen.F1);
-                FarbeP1(transportwagen.P1);
-                FarbeQ1(transportwagen.Q1);
-                FarbeQ2(transportwagen.Q2);
-                FarbeS2(transportwagen.S2);
+                FarbeF1(mainWindow.Cx9020.Kommunikation.F1);
+                FarbeP1(mainWindow.Cx9020.Kommunikation.P1);
+                FarbeQ1(mainWindow.Cx9020.Kommunikation.Q1);
+                FarbeQ2(mainWindow.Cx9020.Kommunikation.Q2);
+                FarbeS2(mainWindow.Cx9020.Kommunikation.S2);
 
-                SichtbarkeitB1(transportwagen.B1);
-                SichtbarkeitB2(transportwagen.B2);
+                SichtbarkeitB1(mainWindow.Cx9020.Kommunikation.B1);
+                SichtbarkeitB2(mainWindow.Cx9020.Kommunikation.B2);
 
-                if (transportwagen.Q1 && transportwagen.Q2) VisibilityKurzschluss = "Visible"; else VisibilityKurzschluss = "Hidden";
+                if (mainWindow.Cx9020.Kommunikation.Q1 && mainWindow.Cx9020.Kommunikation.Q2) VisibilityKurzschluss = "Visible"; else VisibilityKurzschluss = "Hidden";
                 if (transportwagen.Fuellen) VisibilityFuellen = "Visible"; else VisibilityFuellen = "Hidden";
 
 
@@ -65,15 +65,16 @@
                 PositionRadRechts = transportwagen.Position + transportwagen.AbstandRadRechts + AbstandRadWagen;
                 PositionWagenkasten = transportwagen.Position;
 
+                SpsStatus = mainWindow.Cx9020.GetStatus();
 
                 Thread.Sleep(10);
             }
         }
 
-        internal void SetManualQ1() => transportwagen.Q1 = ClickModeButtonQ1();
-        internal void SetManualQ2() => transportwagen.Q2 = ClickModeButtonQ2();
-        internal void SetS1() => transportwagen.S1 = ClickModeButtonS1();
-        internal void SetS3() => transportwagen.S3 = ClickModeButtonS3();
+        internal void SetManualQ1() => mainWindow.Cx9020.Kommunikation.Q1.RemoteValue = ClickModeButtonQ1();
+        internal void SetManualQ2() => mainWindow.Cx9020.Kommunikation.Q2.RemoteValue = ClickModeButtonQ2();
+        internal void SetS1() => mainWindow.Cx9020.Kommunikation.S1.RemoteValue = ClickModeButtonS1();
+        internal void SetS3() => mainWindow.Cx9020.Kommunikation.S3.RemoteValue = ClickModeButtonS3();
 
         #region SPS Status und Farbe
 

@@ -10,7 +10,7 @@
 
         public ViewModel(MainWindow mainWindow)
         {
-            transportwagen = new Model.Transportwagen();
+            transportwagen = new Model.Transportwagen(mainWindow);
             ViAnzeige = new VisuAnzeigen(mainWindow, transportwagen);
         }
 

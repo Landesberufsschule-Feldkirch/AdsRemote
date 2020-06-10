@@ -4,15 +4,6 @@ namespace LAP_2010_2_Transportwagen.Model
 {
     public class Transportwagen
     {
-        public bool Q1 { get; set; }    // Motor LL
-        public bool Q2 { get; set; }    // Motor RL
-        public bool P1 { get; set; }    // Störung
-        public bool S1 { get; set; }    // Taster "Start"
-        public bool S2 { get; set; }    // NotHalt
-        public bool S3 { get; set; }    // Taster Reset
-        public bool F1 { get; set; }    // Thermorelais
-        public bool B1 { get; set; }    // Endschalter Links
-        public bool B2 { get; set; }    // Endschalter Rechts
         public double Position { get; set; }
         public double AbstandRadRechts { get; set; }
         public bool Fuellen { get; internal set; }
@@ -22,14 +13,19 @@ namespace LAP_2010_2_Transportwagen.Model
         private const double randRechts = 430;
         private const double maximaleFuellzeit = 700; // Zykluszeit ist 10ms --> 7"
         private double laufzeitFuellen = 0;
+        private readonly MainWindow mainWindow;
 
-        public Transportwagen()
+
+        public Transportwagen(MainWindow mw)
         {
+            mainWindow = mw;
+
             Position = 30;
             AbstandRadRechts = 100;
 
-            F1 = true;
-            S2 = true;
+
+            mainWindow.Cx9020.Kommunikation.F1.RemoteValue = true;
+            mainWindow.Cx9020.Kommunikation.S2.RemoteValue = true;
 
             System.Threading.Tasks.Task.Run(() => TransportwagtenTask());
         }
@@ -38,18 +34,18 @@ namespace LAP_2010_2_Transportwagen.Model
         {
             while (true)
             {
-                if (B1) laufzeitFuellen = 0;
-                if (B2 && laufzeitFuellen <= maximaleFuellzeit) laufzeitFuellen++;
+                if (mainWindow.Cx9020.Kommunikation.B1) laufzeitFuellen = 0;
+                if (mainWindow.Cx9020.Kommunikation.B2 && laufzeitFuellen <= maximaleFuellzeit) laufzeitFuellen++;
                 if (laufzeitFuellen > 1 && laufzeitFuellen < maximaleFuellzeit) Fuellen = true; else Fuellen = false;
 
-                if (Q1) Position -= geschwindigkeit;
-                if (Q2) Position += geschwindigkeit;
+                if (mainWindow.Cx9020.Kommunikation.Q1) Position -= geschwindigkeit;
+                if (mainWindow.Cx9020.Kommunikation.Q2) Position += geschwindigkeit;
 
                 if (Position < randLinks) Position = randLinks;
                 if (Position > randRechts) Position = randRechts;
 
-                B1 = Position < (randLinks + 2);
-                B2 = Position > (randRechts - 2);
+                mainWindow.Cx9020.Kommunikation.B1.RemoteValue = Position < (randLinks + 2);
+                mainWindow.Cx9020.Kommunikation.B2.RemoteValue = Position > (randRechts - 2);
 
                 Thread.Sleep(10);
             }
@@ -57,12 +53,18 @@ namespace LAP_2010_2_Transportwagen.Model
 
         internal void SetF1()
         {
-            if (F1) F1 = false; else F1 = true;
+            if (mainWindow.Cx9020.Kommunikation.F1)
+                mainWindow.Cx9020.Kommunikation.F1.RemoteValue = false;
+            else
+                mainWindow.Cx9020.Kommunikation.F1.RemoteValue = true;
         }
 
         internal void SetS2()
         {
-            if (S2) S2 = false; else S2 = true;
+            if (mainWindow.Cx9020.Kommunikation.S2)
+                mainWindow.Cx9020.Kommunikation.S2.RemoteValue = false;
+            else
+                mainWindow.Cx9020.Kommunikation.S2.RemoteValue = true;
         }
     }
 }
