@@ -62,7 +62,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Kommunikation\Cx9020Verbindung.cs" />
+    <Compile Include="Cx9020\Verbindung.cs" />
     <Compile Include="Kommunikation\IpAdressen.cs" />
     <Compile Include="Kommunikation\Kommunikation.cs" />
     <Compile Include="SetManual\SetManual.xaml.cs">
@@ -123,9 +123,7 @@
     <Resource Include="Bilder\Initiatoren_Betaetigt.jpg" />
     <Resource Include="Bilder\Initiatoren_Schliesser.jpg" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Cx9020\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\AdsRemote\AdsRemote.csproj">
       <Project>{53650485-fa17-411e-9016-adbce60a9417}</Project>

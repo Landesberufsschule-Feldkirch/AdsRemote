@@ -6,7 +6,7 @@ namespace LAP_2010_2_Transportwagen
     {
         public bool DebugWindowAktiv { get; set; }
         public SetManual.SetManual SetManualWindow { get; set; }
-        public Kommunikation.Cx9020Verbindung Cx9020 { get; set; }
+        public Cx9020.Verbindung Cx9020 { get; set; }
 
 
         private readonly ViewModel.ViewModel viewModel;
@@ -14,7 +14,7 @@ namespace LAP_2010_2_Transportwagen
 
         public MainWindow()
         {
-            Cx9020 = new Kommunikation.Cx9020Verbindung();
+            Cx9020 = new Cx9020.Verbindung();
 
             viewModel = new ViewModel.ViewModel(this);
 

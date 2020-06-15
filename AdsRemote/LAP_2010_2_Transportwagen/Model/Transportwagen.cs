@@ -53,10 +53,8 @@ namespace LAP_2010_2_Transportwagen.Model
 
         internal void SetF1()
         {
-            if (mainWindow.Cx9020.Kommunikation.F1)
-                mainWindow.Cx9020.Kommunikation.F1.RemoteValue = false;
-            else
-                mainWindow.Cx9020.Kommunikation.F1.RemoteValue = true;
+            if (mainWindow.Cx9020.Kommunikation.F1) mainWindow.Cx9020.Kommunikation.F1.RemoteValue = false;
+            else mainWindow.Cx9020.Kommunikation.F1.RemoteValue = true;
         }
 
         internal void SetS2()

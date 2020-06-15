@@ -1,4 +1,4 @@
-﻿namespace LAP_2010_2_Transportwagen.Kommunikation
+﻿namespace LAP_2010_2_Transportwagen.Cx9020
 {
     public class IpAdressen
     {
