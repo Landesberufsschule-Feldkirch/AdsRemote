@@ -66,6 +66,10 @@
                 PositionWagenkasten = transportwagen.Position;
 
                 SpsStatus = mainWindow.Cx9020.GetStatus();
+                SpsColor = mainWindow.Cx9020.GetFarbe();
+
+                if (mainWindow.Cx9020.Kommunikation.TogglePC) mainWindow.Cx9020.Kommunikation.TogglePC.RemoteValue = false;
+                else mainWindow.Cx9020.Kommunikation.TogglePC.RemoteValue = true;
 
                 Thread.Sleep(10);
             }

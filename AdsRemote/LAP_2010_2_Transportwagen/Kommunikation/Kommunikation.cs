@@ -9,6 +9,9 @@ namespace LAP_2010_2_Transportwagen.Cx9020
          *                              AdsInput 
          ************************************************************************************/
 
+        [LinkedTo("AdsInput.ToggleSPS")]
+        public Var<bool> ToggleSPS { get; set; }  // Toggle Bit SPS
+
         [LinkedTo("AdsInput.B1")]
         public Var<bool> B1 { get; set; }       // Endschalter Links
 
@@ -31,7 +34,8 @@ namespace LAP_2010_2_Transportwagen.Cx9020
         /*************************************************************************************
         *                              AdsOutput 
         *************************************************************************************/
-
+        [LinkedTo("AdsOutput.TogglePC")]
+        public Var<bool> TogglePC { get; set; } // ToggleBit PC
 
         [LinkedTo("AdsOutput.P1")]
         public Var<bool> P1 { get; set; }       // Störung
