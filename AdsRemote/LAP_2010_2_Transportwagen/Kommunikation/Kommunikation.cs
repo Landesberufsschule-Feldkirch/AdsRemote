@@ -1,7 +1,7 @@
 ﻿using AdsRemote;
 using AdsRemote.Common;
 
-namespace LAP_2010_2_Transportwagen.Cx9020
+namespace LAP_2010_2_Transportwagen.Kommunikation
 {
     public class Kommunikation
     {
@@ -10,7 +10,8 @@ namespace LAP_2010_2_Transportwagen.Cx9020
          ************************************************************************************/
 
         [LinkedTo("AdsInput.ToggleSPS")]
-        public Var<bool> ToggleSPS { get; set; }  // Toggle Bit SPS
+        // ReSharper disable once UnusedMember.Global
+        public Var<bool> ToggleSps { get; set; }  // Toggle Bit SPS
 
         [LinkedTo("AdsInput.B1")]
         public Var<bool> B1 { get; set; }       // Endschalter Links
@@ -35,7 +36,7 @@ namespace LAP_2010_2_Transportwagen.Cx9020
         *                              AdsOutput 
         *************************************************************************************/
         [LinkedTo("AdsOutput.TogglePC")]
-        public Var<bool> TogglePC { get; set; } // ToggleBit PC
+        public Var<bool> TogglePc { get; set; } // ToggleBit PC
 
         [LinkedTo("AdsOutput.P1")]
         public Var<bool> P1 { get; set; }       // Störung

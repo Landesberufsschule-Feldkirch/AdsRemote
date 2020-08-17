@@ -2,34 +2,33 @@
 
 namespace LAP_2010_2_Transportwagen
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         public bool DebugWindowAktiv { get; set; }
         public SetManual.SetManual SetManualWindow { get; set; }
         public Cx9020.Verbindung Cx9020 { get; set; }
 
 
-        private readonly ViewModel.ViewModel viewModel;
+        private readonly ViewModel.ViewModel _viewModel;
 
 
         public MainWindow()
         {
             Cx9020 = new Cx9020.Verbindung();
 
-            viewModel = new ViewModel.ViewModel(this);
+            _viewModel = new ViewModel.ViewModel(this);
 
             InitializeComponent();
-            DataContext = viewModel;
+            DataContext = _viewModel;
 
 
-            if (System.Diagnostics.Debugger.IsAttached) btnDebugWindow.Visibility = System.Windows.Visibility.Visible;
-            else btnDebugWindow.Visibility = System.Windows.Visibility.Hidden;
+            BtnDebugWindow.Visibility = System.Diagnostics.Debugger.IsAttached ? Visibility.Visible : Visibility.Hidden;
         }
 
         private void DebugWindowOeffnen(object sender, RoutedEventArgs e)
         {
             DebugWindowAktiv = true;
-            SetManualWindow = new SetManual.SetManual(viewModel);
+            SetManualWindow = new SetManual.SetManual(_viewModel);
             SetManualWindow.Show();
         }
     }

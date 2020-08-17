@@ -5,13 +5,13 @@
 
     public class VisuAnzeigen : INotifyPropertyChanged
     {
-        private readonly Model.Transportwagen transportwagen;
-        private readonly MainWindow mainWindow;
+        private readonly Model.Transportwagen _transportwagen;
+        private readonly MainWindow _mainWindow;
 
         public VisuAnzeigen(MainWindow mw, Model.Transportwagen tw)
         {
-            mainWindow = mw;
-            transportwagen = tw;
+            _mainWindow = mw;
+            _transportwagen = tw;
 
             SpsStatus = "-";
             SpsColor = "LightBlue";
@@ -39,46 +39,46 @@
             PositionRadRechts = 0;
             PositionWagenkasten = 0;
 
-            System.Threading.Tasks.Task.Run(() => VisuAnzeigenTask());
+            System.Threading.Tasks.Task.Run(VisuAnzeigenTask);
         }
 
         private void VisuAnzeigenTask()
         {
-            const double AbstandRadWagen = 10;
+            const double abstandRadWagen = 10;
 
             while (true)
             {
-                FarbeF1(mainWindow.Cx9020.Kommunikation.F1);
-                FarbeP1(mainWindow.Cx9020.Kommunikation.P1);
-                FarbeQ1(mainWindow.Cx9020.Kommunikation.Q1);
-                FarbeQ2(mainWindow.Cx9020.Kommunikation.Q2);
-                FarbeS2(mainWindow.Cx9020.Kommunikation.S2);
+                FarbeF1(_mainWindow.Cx9020.Kommunikation.F1);
+                FarbeP1(_mainWindow.Cx9020.Kommunikation.P1);
+                FarbeQ1(_mainWindow.Cx9020.Kommunikation.Q1);
+                FarbeQ2(_mainWindow.Cx9020.Kommunikation.Q2);
+                FarbeS2(_mainWindow.Cx9020.Kommunikation.S2);
 
-                SichtbarkeitB1(mainWindow.Cx9020.Kommunikation.B1);
-                SichtbarkeitB2(mainWindow.Cx9020.Kommunikation.B2);
+                SichtbarkeitB1(_mainWindow.Cx9020.Kommunikation.B1);
+                SichtbarkeitB2(_mainWindow.Cx9020.Kommunikation.B2);
 
-                if (mainWindow.Cx9020.Kommunikation.Q1 && mainWindow.Cx9020.Kommunikation.Q2) VisibilityKurzschluss = "Visible"; else VisibilityKurzschluss = "Hidden";
-                if (transportwagen.Fuellen) VisibilityFuellen = "Visible"; else VisibilityFuellen = "Hidden";
+                if (_mainWindow.Cx9020.Kommunikation.Q1 && _mainWindow.Cx9020.Kommunikation.Q2) VisibilityKurzschluss = "Visible"; else VisibilityKurzschluss = "Hidden";
+                VisibilityFuellen = _transportwagen.Fuellen ? "Visible" : "Hidden";
 
 
-                PositionRadLinks = transportwagen.Position + AbstandRadWagen;
-                PositionRadRechts = transportwagen.Position + transportwagen.AbstandRadRechts + AbstandRadWagen;
-                PositionWagenkasten = transportwagen.Position;
+                PositionRadLinks = _transportwagen.Position + abstandRadWagen;
+                PositionRadRechts = _transportwagen.Position + _transportwagen.AbstandRadRechts + abstandRadWagen;
+                PositionWagenkasten = _transportwagen.Position;
 
-                SpsStatus = mainWindow.Cx9020.GetStatus();
-                SpsColor = mainWindow.Cx9020.GetFarbe();
+                SpsStatus = _mainWindow.Cx9020.GetStatus();
+                SpsColor = _mainWindow.Cx9020.GetFarbe();
 
-                if (mainWindow.Cx9020.Kommunikation.TogglePC) mainWindow.Cx9020.Kommunikation.TogglePC.RemoteValue = false;
-                else mainWindow.Cx9020.Kommunikation.TogglePC.RemoteValue = true;
+                _mainWindow.Cx9020.Kommunikation.TogglePc.RemoteValue = !_mainWindow.Cx9020.Kommunikation.TogglePc;
 
                 Thread.Sleep(10);
             }
+            // ReSharper disable once FunctionNeverReturns
         }
 
-        internal void SetManualQ1() => mainWindow.Cx9020.Kommunikation.Q1.RemoteValue = ClickModeButtonQ1();
-        internal void SetManualQ2() => mainWindow.Cx9020.Kommunikation.Q2.RemoteValue = ClickModeButtonQ2();
-        internal void SetS1() => mainWindow.Cx9020.Kommunikation.S1.RemoteValue = ClickModeButtonS1();
-        internal void SetS3() => mainWindow.Cx9020.Kommunikation.S3.RemoteValue = ClickModeButtonS3();
+        internal void SetManualQ1() => _mainWindow.Cx9020.Kommunikation.Q1.RemoteValue = ClickModeButtonQ1();
+        internal void SetManualQ2() => _mainWindow.Cx9020.Kommunikation.Q2.RemoteValue = ClickModeButtonQ2();
+        internal void SetS1() => _mainWindow.Cx9020.Kommunikation.S1.RemoteValue = ClickModeButtonS1();
+        internal void SetS3() => _mainWindow.Cx9020.Kommunikation.S3.RemoteValue = ClickModeButtonS3();
 
         #region SPS Status und Farbe
 
@@ -110,7 +110,7 @@
 
         #region Color F1
 
-        public void FarbeF1(bool val) { if (val) ColorF1 = "LawnGreen"; else ColorF1 = "Red"; }
+        public void FarbeF1(bool val) => ColorF1 = val ? "LawnGreen" : "Red";
 
         private string _colorF1;
 
@@ -128,7 +128,7 @@
 
         #region Color P1
 
-        public void FarbeP1(bool val) { if (val) ColorP1 = "Red"; else ColorP1 = "White"; }
+        public void FarbeP1(bool val) => ColorP1 = val ? "Red" : "White";
 
         private string _colorP1;
 
@@ -146,7 +146,7 @@
 
         #region Color Q1
 
-        public void FarbeQ1(bool val) { if (val) ColorQ1 = "LawnGreen"; else ColorQ1 = "White"; }
+        public void FarbeQ1(bool val) => ColorQ1 = val ? "LawnGreen" : "White";
 
         private string _colorQ1;
 
@@ -164,7 +164,7 @@
 
         #region Color Q2
 
-        public void FarbeQ2(bool val) { if (val) ColorQ2 = "LawnGreen"; else ColorQ2 = "White"; }
+        public void FarbeQ2(bool val) => ColorQ2 = val ? "LawnGreen" : "White";
 
         private string _colorQ2;
 
@@ -182,7 +182,7 @@
 
         #region Color S2
 
-        public void FarbeS2(bool val) { if (val) ColorS2 = "LawnGreen"; else ColorS2 = "Red"; }
+        public void FarbeS2(bool val) => ColorS2 = val ? "LawnGreen" : "Red";
 
         private string _colorS2;
 

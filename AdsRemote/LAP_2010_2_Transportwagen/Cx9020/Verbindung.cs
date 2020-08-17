@@ -1,51 +1,47 @@
 ﻿using AdsRemote;
 using AdsRemote.Common;
 using Newtonsoft.Json;
-using System;
 using System.IO;
+using LAP_2010_2_Transportwagen.Kommunikation;
 
 namespace LAP_2010_2_Transportwagen.Cx9020
 {
     public class Verbindung
     {
-        public Kommunikation Kommunikation { get; set; }
+        public Kommunikation.Kommunikation Kommunikation { get; set; }
 
-        private string status;
-        private string farbe;
+        private string _status;
+        private string _farbe;
 
         public Verbindung()
         {
-            IpAdressen ipAdressen;
-            PLC plc;
+            _status = "Keine Verbindung!";
+            _farbe = "LightBlue";
 
-            status = "Keine Verbindung!";
-            farbe = "LightBlue";
+            var ipAdressen = JsonConvert.DeserializeObject<IpAdressen>(File.ReadAllText(@"Kommunikation/IpAdressen.json"));
 
-            ipAdressen = JsonConvert.DeserializeObject<IpAdressen>(File.ReadAllText(@"Kommunikation/IpAdressen.json"));
-
-            plc = new PLC(ipAdressen.AmsNetId);
-            plc.Tune_ReinitInterval = 2;
+            var plc = new PLC(ipAdressen.AmsNetId) {Tune_ReinitInterval = 2};
             plc.DeviceReady += PlcDeviceReady;
             plc.DeviceLost += PlcDeviceLost;
 
-            Kommunikation = plc.Class<Kommunikation>();
+            Kommunikation = plc.Class<Kommunikation.Kommunikation>();
 
-            status = "Mit SPS Verbinden [" + ipAdressen.AmsNetId + "]";
-            farbe = "LightBlue";
+            _status = "Mit SPS Verbinden [" + ipAdressen.AmsNetId + "]";
+            _farbe = "LightBlue";
         }
 
-        internal string GetStatus() => status;
-        internal string GetFarbe() => farbe;
+        internal string GetStatus() => _status;
+        internal string GetFarbe() => _farbe;
 
         private void PlcDeviceLost(object sender, AdsDevice e)
         {
-            status = "Verbindung zur SPS verloren [Port " + e.Address.Port.ToString() + "]";
-            farbe = "Red";
+            _status = "Verbindung zur SPS verloren [Port " + e.Address.Port.ToString() + "]";
+            _farbe = "Red";
         }
         private void PlcDeviceReady(object sender, AdsDevice e)
         {
-            status = "Verbindung zur SPS OK [Port " + e.Address.Port.ToString() + "]";
-            farbe = "LawnGreen";
+            _status = "Verbindung zur SPS OK [Port " + e.Address.Port.ToString() + "]";
+            _farbe = "LawnGreen";
         }
 
     }

@@ -8,61 +8,51 @@ namespace LAP_2010_2_Transportwagen.Model
         public double AbstandRadRechts { get; set; }
         public bool Fuellen { get; internal set; }
 
-        private const double geschwindigkeit = 1;
-        private const double randLinks = 30;
-        private const double randRechts = 430;
-        private const double maximaleFuellzeit = 700; // Zykluszeit ist 10ms --> 7"
-        private double laufzeitFuellen = 0;
-        private readonly MainWindow mainWindow;
+        private const double Geschwindigkeit = 1;
+        private const double RandLinks = 30;
+        private const double RandRechts = 430;
+        private const double MaximaleFuellzeit = 700; // Zykluszeit ist 10ms --> 7"
+        private double _laufzeitFuellen;
+        private readonly MainWindow _mainWindow;
 
 
         public Transportwagen(MainWindow mw)
         {
-            mainWindow = mw;
+            _mainWindow = mw;
 
             Position = 30;
             AbstandRadRechts = 100;
 
 
-            mainWindow.Cx9020.Kommunikation.F1.RemoteValue = true;
-            mainWindow.Cx9020.Kommunikation.S2.RemoteValue = true;
+            _mainWindow.Cx9020.Kommunikation.F1.RemoteValue = true;
+            _mainWindow.Cx9020.Kommunikation.S2.RemoteValue = true;
 
-            System.Threading.Tasks.Task.Run(() => TransportwagtenTask());
+            System.Threading.Tasks.Task.Run(TransportwagtenTask);
         }
 
         private void TransportwagtenTask()
         {
             while (true)
             {
-                if (mainWindow.Cx9020.Kommunikation.B1) laufzeitFuellen = 0;
-                if (mainWindow.Cx9020.Kommunikation.B2 && laufzeitFuellen <= maximaleFuellzeit) laufzeitFuellen++;
-                if (laufzeitFuellen > 1 && laufzeitFuellen < maximaleFuellzeit) Fuellen = true; else Fuellen = false;
+                if (_mainWindow.Cx9020.Kommunikation.B1) _laufzeitFuellen = 0;
+                if (_mainWindow.Cx9020.Kommunikation.B2 && _laufzeitFuellen <= MaximaleFuellzeit) _laufzeitFuellen++;
+                if (_laufzeitFuellen > 1 && _laufzeitFuellen < MaximaleFuellzeit) Fuellen = true; else Fuellen = false;
 
-                if (mainWindow.Cx9020.Kommunikation.Q1) Position -= geschwindigkeit;
-                if (mainWindow.Cx9020.Kommunikation.Q2) Position += geschwindigkeit;
+                if (_mainWindow.Cx9020.Kommunikation.Q1) Position -= Geschwindigkeit;
+                if (_mainWindow.Cx9020.Kommunikation.Q2) Position += Geschwindigkeit;
 
-                if (Position < randLinks) Position = randLinks;
-                if (Position > randRechts) Position = randRechts;
+                if (Position < RandLinks) Position = RandLinks;
+                if (Position > RandRechts) Position = RandRechts;
 
-                mainWindow.Cx9020.Kommunikation.B1.RemoteValue = Position < (randLinks + 2);
-                mainWindow.Cx9020.Kommunikation.B2.RemoteValue = Position > (randRechts - 2);
+                _mainWindow.Cx9020.Kommunikation.B1.RemoteValue = Position < (RandLinks + 2);
+                _mainWindow.Cx9020.Kommunikation.B2.RemoteValue = Position > (RandRechts - 2);
 
                 Thread.Sleep(10);
             }
+            // ReSharper disable once FunctionNeverReturns
         }
 
-        internal void SetF1()
-        {
-            if (mainWindow.Cx9020.Kommunikation.F1) mainWindow.Cx9020.Kommunikation.F1.RemoteValue = false;
-            else mainWindow.Cx9020.Kommunikation.F1.RemoteValue = true;
-        }
-
-        internal void SetS2()
-        {
-            if (mainWindow.Cx9020.Kommunikation.S2)
-                mainWindow.Cx9020.Kommunikation.S2.RemoteValue = false;
-            else
-                mainWindow.Cx9020.Kommunikation.S2.RemoteValue = true;
-        }
+        internal void SetF1() => _mainWindow.Cx9020.Kommunikation.F1.RemoteValue = !_mainWindow.Cx9020.Kommunikation.F1;
+        internal void SetS2() => _mainWindow.Cx9020.Kommunikation.S2.RemoteValue = !_mainWindow.Cx9020.Kommunikation.S2;
     }
 }
