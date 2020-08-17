@@ -2,7 +2,8 @@
 {
     public class IpAdressen
     {
-        public string AmsNetId { get; set; }
+        public string AmsNetIdPc { get; set; }
+        public string AmsNetIdSps { get; set; }
         // ReSharper disable once UnusedMember.Global
         public string Port { get; set; }
         // ReSharper disable once UnusedMember.Global

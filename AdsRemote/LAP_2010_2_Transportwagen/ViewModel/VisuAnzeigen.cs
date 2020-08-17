@@ -15,6 +15,7 @@
 
             SpsStatus = "-";
             SpsColor = "LightBlue";
+            LokaleAmsIdFalsch = "Hidden";
 
             ColorF1 = "LawnGreen";
             ColorP1 = "LawnGreen";
@@ -59,7 +60,7 @@
 
                 if (_mainWindow.Cx9020.Kommunikation.Q1 && _mainWindow.Cx9020.Kommunikation.Q2) VisibilityKurzschluss = "Visible"; else VisibilityKurzschluss = "Hidden";
                 VisibilityFuellen = _transportwagen.Fuellen ? "Visible" : "Hidden";
-
+                LokaleAmsIdFalsch = _mainWindow.Cx9020.GetLokaleAmsIdFalsch() ? "Visible" : "Hidden";
 
                 PositionRadLinks = _transportwagen.Position + abstandRadWagen;
                 PositionRadRechts = _transportwagen.Position + _transportwagen.AbstandRadRechts + abstandRadWagen;
@@ -105,6 +106,20 @@
                 OnPropertyChanged(nameof(SpsColor));
             }
         }
+
+
+        private string _lokaleAmsIdFalsch;
+
+        public string LokaleAmsIdFalsch
+        {
+            get => _lokaleAmsIdFalsch;
+            set
+            {
+                _lokaleAmsIdFalsch = value;
+                OnPropertyChanged((nameof(LokaleAmsIdFalsch)));
+            }
+        }
+
 
         #endregion SPS Status und Farbe
 
