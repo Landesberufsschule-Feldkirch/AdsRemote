@@ -133,7 +133,7 @@ namespace AdsRemote
                         bool isActive = false;
                         try
                         {
-                            Var v = device.Vars[0];
+                            var v = device.Vars[0];
                             if (v.IndexGroup > -1 && v.IndexOffset > -1)
                                 device.AdsClient.ReadAny(v.IndexGroup, v.IndexOffset, v.ValueType);
                             else
@@ -141,7 +141,7 @@ namespace AdsRemote
 
                             isActive = true;
                         }
-                        catch (Exception)
+                        catch
                         {
                             // ignored
                         }

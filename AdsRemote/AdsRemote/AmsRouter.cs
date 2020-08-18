@@ -114,11 +114,11 @@ namespace AdsRemote
             if (rr == null)
                 return false;
 
-            if (!rr.Buffer.Take(4).ToArray().SequenceEqual(Segment.Header))
+            if (!rr.Buffer.Take(4).SequenceEqual(Segment.Header))
                 return false;
-            if (!rr.Buffer.Skip(4).Take(Segment.End.Length).ToArray().SequenceEqual(Segment.End))
+            if (!rr.Buffer.Skip(4).Take(Segment.End.Length).SequenceEqual(Segment.End))
                 return false;
-            if (!rr.Buffer.Skip(8).Take(Segment.ResponseDiscover.Length).ToArray().SequenceEqual(Segment.ResponseAddroute))
+            if (!rr.Buffer.Skip(8).Take(Segment.ResponseDiscover.Length).SequenceEqual(Segment.ResponseAddroute))
                 return false;
 
             rr.Shift =
@@ -193,11 +193,11 @@ namespace AdsRemote
             RemotePlcInfo device = new RemotePlcInfo {Address = rr.RemoteHost};
 
 
-            if (!rr.Buffer.Take(4).ToArray().SequenceEqual(Segment.Header))
+            if (!rr.Buffer.Take(4).SequenceEqual(Segment.Header))
                 return device;
-            if (!rr.Buffer.Skip(4).Take(Segment.End.Length).ToArray().SequenceEqual(Segment.End))
+            if (!rr.Buffer.Skip(4).Take(Segment.End.Length).SequenceEqual(Segment.End))
                 return device;
-            if (!rr.Buffer.Skip(8).Take(Segment.ResponseDiscover.Length).ToArray().SequenceEqual(Segment.ResponseDiscover))
+            if (!rr.Buffer.Skip(8).Take(Segment.ResponseDiscover.Length).SequenceEqual(Segment.ResponseDiscover))
                 return device;
 
             rr.Shift = Segment.Header.Length + Segment.End.Length + Segment.ResponseDiscover.Length;

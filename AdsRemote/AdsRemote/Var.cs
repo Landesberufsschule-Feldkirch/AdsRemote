@@ -17,7 +17,7 @@ namespace AdsRemote
                 {
                     Device.AdsClient.WriteAny(IndexGroup, IndexOffset, InternalValue); // TODO to refactor
                 }
-                catch (Exception)
+                catch
                 {
                     // ignored
                 }
@@ -111,7 +111,7 @@ namespace AdsRemote
                         IndexGroup = sym.IndexGroup;
                         IndexOffset = sym.IndexOffset;
                     }
-                    catch (Exception)
+                    catch
                     {
                         // ignored
                     }
