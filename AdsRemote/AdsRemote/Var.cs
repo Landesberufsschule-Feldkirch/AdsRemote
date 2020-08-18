@@ -6,18 +6,21 @@ namespace AdsRemote
 {
     public class Var<T> : Var
     {
-        internal T internalValue = default(T);
+        internal T InternalValue;
         public virtual T RemoteValue
         {
-            get { return internalValue; }
+            get => InternalValue;
             set
             {
-                internalValue = value;
+                InternalValue = value;
                 try
                 {
-                    Device.AdsClient.WriteAny(IndexGroup, IndexOffset, internalValue); // TODO to refactor
+                    Device.AdsClient.WriteAny(IndexGroup, IndexOffset, InternalValue); // TODO to refactor
                 }
-                catch { }
+                catch (Exception)
+                {
+                    // ignored
+                }
 
                 if (Device.UiContext != null)
                     Device.UiContext.Send((o) => OnValueChanged(), null);
@@ -32,7 +35,7 @@ namespace AdsRemote
         /// <param name="value"></param>
         internal override void SetInternalValue(object value)
         {
-            internalValue = (T)value;
+            InternalValue = (T)value;
             if (Device.UiContext != null)
                 Device.UiContext.Send((o) => OnValueChanged(), null);
             else
@@ -108,7 +111,10 @@ namespace AdsRemote
                         IndexGroup = sym.IndexGroup;
                         IndexOffset = sym.IndexOffset;
                     }
-                    catch { }
+                    catch (Exception)
+                    {
+                        // ignored
+                    }
 
                 if (IndexGroup > -1 && IndexOffset > -1)
                     NotifyHandle =
@@ -135,7 +141,7 @@ namespace AdsRemote
 
         public static implicit operator T(Var<T> var)
         {
-            return var.internalValue;
+            return var.InternalValue;
         }
 
         public static implicit operator string(Var<T> var)
@@ -145,14 +151,14 @@ namespace AdsRemote
 
         public override string ToString()
         {
-            return internalValue == null ? "" : internalValue.ToString();
+            return InternalValue == null ? "" : InternalValue.ToString();
         }
 
         public override object GetValue()
         {
-            return internalValue;
+            return InternalValue;
         }
 
-        public override Type ValueType { get { return typeof(T); } }
+        public override Type ValueType => typeof(T);
     } // class
 }

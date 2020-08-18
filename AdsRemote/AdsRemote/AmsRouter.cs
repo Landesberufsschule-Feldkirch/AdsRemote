@@ -33,6 +33,7 @@ namespace AdsRemote
         /// <param name="timeout"></param>
         /// <param name="adsUdpPort"></param>
         /// <returns>True - if route added, False - otherwise</returns>
+        // ReSharper disable once UnusedMember.Global
         public static async Task<bool> AddRecordAsync(
             IPAddress localhost,
             IPAddress remoteHost,
@@ -43,7 +44,7 @@ namespace AdsRemote
             string password = "1",
             bool isTemporaryRoute = false,
             int timeout = 10000,
-            int adsUdpPort = Request.DEFAULT_UDP_PORT)
+            int adsUdpPort = Request.DefaultUdpPort)
         {
             if (string.IsNullOrWhiteSpace(name))
                 name = Environment.MachineName;
@@ -52,48 +53,48 @@ namespace AdsRemote
             if (string.IsNullOrWhiteSpace(login))
                 login = Environment.UserName;
 
-            byte[] Segment_AMSNETID = localAmsNetId.ToBytes();
+            byte[] segmentAmsnetid = localAmsNetId.ToBytes();
 
-            byte[] Segment_ROUTENAME = name.GetAdsBytes();
-            byte[] Segment_ROUTENAME_LENGTH = Segment.ROUTENAME_L;
-            Segment_ROUTENAME_LENGTH[2] = (byte)Segment_ROUTENAME.Length;
+            byte[] segmentRoutename = name.GetAdsBytes();
+            byte[] segmentRoutenameLength = Segment.RoutenameL;
+            segmentRoutenameLength[2] = (byte)segmentRoutename.Length;
 
-            byte[] Segment_USERNAME = login.GetAdsBytes();
-            byte[] Segment_USERNAME_LENGTH = Segment.USERNAME_L;
-            Segment_USERNAME_LENGTH[2] = (byte)Segment_USERNAME.Length;
+            byte[] segmentUsername = login.GetAdsBytes();
+            byte[] segmentUsernameLength = Segment.UsernameL;
+            segmentUsernameLength[2] = (byte)segmentUsername.Length;
 
-            byte[] Segment_PASSWORD = password.GetAdsBytes();
-            byte[] Segment_PASSWORD_LENGTH = Segment.PASSWORD_L;
-            Segment_PASSWORD_LENGTH[2] = (byte)Segment_PASSWORD.Length;
+            byte[] segmentPassword = password.GetAdsBytes();
+            byte[] segmentPasswordLength = Segment.PasswordL;
+            segmentPasswordLength[2] = (byte)segmentPassword.Length;
 
-            byte[] Segment_IPADDRESS = localIpName.GetAdsBytes();
-            byte[] Segment_IPADDRESS_LENGTH = Segment.LOCALHOST_L;
-            Segment_IPADDRESS_LENGTH[2] = (byte)Segment_IPADDRESS.Length;
+            byte[] segmentIpaddress = localIpName.GetAdsBytes();
+            byte[] segmentIpaddressLength = Segment.LocalhostL;
+            segmentIpaddressLength[2] = (byte)segmentIpaddress.Length;
 
             Request request = new Request(timeout);
 
-            request.Add(Segment.HEADER);
-            request.Add(Segment.END);
-            request.Add(Segment.REQUEST_ADDROUTE);
-            request.Add(Segment_AMSNETID);
-            request.Add(Segment.PORT);
+            request.Add(Segment.Header);
+            request.Add(Segment.End);
+            request.Add(Segment.RequestAddroute);
+            request.Add(segmentAmsnetid);
+            request.Add(Segment.Port);
             request.Add(isTemporaryRoute ?
-                        Segment.ROUTETYPE_TEMP :
-                        Segment.ROUTETYPE_STATIC);
-            request.Add(Segment_ROUTENAME_LENGTH);
-            request.Add(Segment_ROUTENAME);
-            request.Add(Segment.AMSNETID_L);
-            request.Add(Segment_AMSNETID);
-            request.Add(Segment.USERNAME_L);
-            request.Add(Segment_USERNAME);
-            request.Add(Segment.PASSWORD_L);
-            request.Add(Segment_PASSWORD);
-            request.Add(Segment.LOCALHOST_L);
-            request.Add(Segment_IPADDRESS);
+                        Segment.RoutetypeTemp :
+                        Segment.RoutetypeStatic);
+            request.Add(segmentRoutenameLength);
+            request.Add(segmentRoutename);
+            request.Add(Segment.AmsnetidL);
+            request.Add(segmentAmsnetid);
+            request.Add(Segment.UsernameL);
+            request.Add(segmentUsername);
+            request.Add(Segment.PasswordL);
+            request.Add(segmentPassword);
+            request.Add(Segment.LocalhostL);
+            request.Add(segmentIpaddress);
 
             if (isTemporaryRoute)
                 request.Add(
-                        Segment.TEMPROUTE_TAIL);
+                        Segment.TemprouteTail);
 
             IPEndPoint endpoint = new IPEndPoint(remoteHost, adsUdpPort);
             Response response = await request.SendAsync(endpoint);
@@ -113,35 +114,35 @@ namespace AdsRemote
             if (rr == null)
                 return false;
 
-            if (!rr.Buffer.Take(4).ToArray().SequenceEqual(Segment.HEADER))
+            if (!rr.Buffer.Take(4).ToArray().SequenceEqual(Segment.Header))
                 return false;
-            if (!rr.Buffer.Skip(4).Take(Segment.END.Length).ToArray().SequenceEqual(Segment.END))
+            if (!rr.Buffer.Skip(4).Take(Segment.End.Length).ToArray().SequenceEqual(Segment.End))
                 return false;
-            if (!rr.Buffer.Skip(8).Take(Segment.RESPONSE_DISCOVER.Length).ToArray().SequenceEqual(Segment.RESPONSE_ADDROUTE))
+            if (!rr.Buffer.Skip(8).Take(Segment.ResponseDiscover.Length).ToArray().SequenceEqual(Segment.ResponseAddroute))
                 return false;
 
             rr.Shift =
-                Segment.HEADER.Length +
-                Segment.END.Length +
-                Segment.RESPONSE_ADDROUTE.Length +
-                Segment.AMSNETID.Length +
-                Segment.PORT.Length +
-                Segment.END.Length +
-                Segment.END.Length;
+                Segment.Header.Length +
+                Segment.End.Length +
+                Segment.ResponseAddroute.Length +
+                Segment.Amsnetid.Length +
+                Segment.Port.Length +
+                Segment.End.Length +
+                Segment.End.Length;
 
-            byte[] ack = rr.NextChunk(Segment.L_ROUTEACK);
+            byte[] ack = rr.NextChunk(Segment.LRouteack);
 
             return (ack[0] == 0) && (ack[1] == 0);
         }
 
         #region Device Finder
-        public static async Task<List<RemotePlcInfo>> BroadcastSearchAsync(IPAddress localhost, int timeout = 10000, int adsUdpPort = Request.DEFAULT_UDP_PORT)
+        public static async Task<List<RemotePlcInfo>> BroadcastSearchAsync(IPAddress localhost, int timeout = 10000, int adsUdpPort = Request.DefaultUdpPort)
         {
             Request request = CreateSearchRequest(localhost, timeout);
 
             IPEndPoint broadcast =
                 new IPEndPoint(
-                    IPHelper.GetBroadcastAddress(localhost),
+                    IpHelper.GetBroadcastAddress(localhost),
                     adsUdpPort);
 
             Response response = await request.SendAsync(broadcast);
@@ -157,7 +158,8 @@ namespace AdsRemote
             return devices;
         }
 
-        public static async Task<RemotePlcInfo> GetRemotePlcInfoAsync(IPAddress localhost, IPAddress remoteHost, int timeout = 10000, int adsUdpPort = Request.DEFAULT_UDP_PORT)
+        // ReSharper disable once UnusedMember.Global
+        public static async Task<RemotePlcInfo> GetRemotePlcInfoAsync(IPAddress localhost, IPAddress remoteHost, int timeout = 10000, int adsUdpPort = Request.DefaultUdpPort)
         {
             Request request = CreateSearchRequest(localhost, timeout);
 
@@ -173,59 +175,58 @@ namespace AdsRemote
         {
             Request request = new Request(timeout);
 
-            byte[] Segment_AMSNETID = Segment.AMSNETID;
-            localhost.GetAddressBytes().CopyTo(Segment_AMSNETID, 0);
+            byte[] segmentAmsnetid = Segment.Amsnetid;
+            localhost.GetAddressBytes().CopyTo(segmentAmsnetid, 0);
 
-            request.Add(Segment.HEADER);
-            request.Add(Segment.END);
-            request.Add(Segment.REQUEST_DISCOVER);
-            request.Add(Segment_AMSNETID);
-            request.Add(Segment.PORT);
-            request.Add(Segment.END);
+            request.Add(Segment.Header);
+            request.Add(Segment.End);
+            request.Add(Segment.RequestDiscover);
+            request.Add(segmentAmsnetid);
+            request.Add(Segment.Port);
+            request.Add(Segment.End);
 
             return request;
         }
 
         private static RemotePlcInfo ParseBroadcastSearchResponse(ResponseResult rr)
         {
-            RemotePlcInfo device = new RemotePlcInfo();
+            RemotePlcInfo device = new RemotePlcInfo {Address = rr.RemoteHost};
 
-            device.Address = rr.RemoteHost;
 
-            if (!rr.Buffer.Take(4).ToArray().SequenceEqual(Segment.HEADER))
+            if (!rr.Buffer.Take(4).ToArray().SequenceEqual(Segment.Header))
                 return device;
-            if (!rr.Buffer.Skip(4).Take(Segment.END.Length).ToArray().SequenceEqual(Segment.END))
+            if (!rr.Buffer.Skip(4).Take(Segment.End.Length).ToArray().SequenceEqual(Segment.End))
                 return device;
-            if (!rr.Buffer.Skip(8).Take(Segment.RESPONSE_DISCOVER.Length).ToArray().SequenceEqual(Segment.RESPONSE_DISCOVER))
+            if (!rr.Buffer.Skip(8).Take(Segment.ResponseDiscover.Length).ToArray().SequenceEqual(Segment.ResponseDiscover))
                 return device;
 
-            rr.Shift = Segment.HEADER.Length + Segment.END.Length + Segment.RESPONSE_DISCOVER.Length;
+            rr.Shift = Segment.Header.Length + Segment.End.Length + Segment.ResponseDiscover.Length;
 
             // AmsNetId
             // then skip 2 bytes of PORT + 4 bytes of ROUTE_TYPE
-            byte[] amsNetId = rr.NextChunk(Segment.AMSNETID.Length, add: Segment.PORT.Length + Segment.ROUTETYPE_STATIC.Length);
+            byte[] amsNetId = rr.NextChunk(Segment.Amsnetid.Length, add: Segment.Port.Length + Segment.RoutetypeStatic.Length);
             device.AmsNetId = new AmsNetId(amsNetId);
 
             // PLC NameLength
-            byte[] bNameLen = rr.NextChunk(Segment.L_NAMELENGTH);
+            byte[] bNameLen = rr.NextChunk(Segment.LNamelength);
             int nameLen =
                 bNameLen[0] == 5 && bNameLen[1] == 0 ?
                     bNameLen[2] + bNameLen[3] * 256 :
                     0;
 
             byte[] bName = rr.NextChunk(nameLen - 1, add: 1);
-            device.Name = System.Text.ASCIIEncoding.Default.GetString(bName);
+            device.Name = ASCIIEncoding.Default.GetString(bName);
 
             // TCat type
-            byte[] tcatType = rr.NextChunk(Segment.TCATTYPE_RUNTIME.Length);
-            if (tcatType[0] == Segment.TCATTYPE_RUNTIME[0])
-                if (tcatType[2] == Segment.TCATTYPE_RUNTIME[2])
+            byte[] tcatType = rr.NextChunk(Segment.TcattypeRuntime.Length);
+            if (tcatType[0] == Segment.TcattypeRuntime[0])
+                if (tcatType[2] == Segment.TcattypeRuntime[2])
                     device.IsRuntime = true;
 
             // OS version
-            byte[] osVer = rr.NextChunk(Segment.L_OSVERSION);
+            byte[] osVer = rr.NextChunk(Segment.LOsversion);
             ushort osKey = (ushort)(osVer[0] * 256 + osVer[4]);
-            device.OsVersion = OS_IDS.ContainsKey(osKey) ? OS_IDS[osKey] : osKey.ToString("X2");
+            device.OsVersion = OsIds.ContainsKey(osKey) ? OsIds[osKey] : osKey.ToString("X2");
             //??? device.OS += " build " + (osVer[8] + osVer[9] * 256).ToString();
 
             bool isUnicode = false;
@@ -248,7 +249,7 @@ namespace AdsRemote
                 }
 
             // Comment
-            byte[] descMarker = rr.NextChunk(Segment.L_DESCRIPTIONMARKER);
+            byte[] descMarker = rr.NextChunk(Segment.LDescriptionmarker);
             int len = 0;
             int c = rr.Buffer.Length;
             if (descMarker[0] == 2)
@@ -288,7 +289,7 @@ namespace AdsRemote
             return device;
         }
 
-        public static readonly Dictionary<ushort, string> OS_IDS =
+        public static readonly Dictionary<ushort, string> OsIds =
             new Dictionary<ushort, string>
             {
                 {0x0700, "Windows CE 7"},

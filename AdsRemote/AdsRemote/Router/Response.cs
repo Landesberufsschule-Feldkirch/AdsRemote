@@ -7,13 +7,13 @@ namespace AdsRemote.Router
 {
     internal class Response
     {
-        UdpClient client;
-        public UdpClient Client { get { return client; } }
+        readonly UdpClient _client;
+        public UdpClient Client => _client;
         public int Timeout;
 
         public Response(UdpClient client, int timeout = 10000)
         {
-            this.client = client;
+            this._client = client;
             Timeout = timeout;
         }
 
@@ -21,7 +21,7 @@ namespace AdsRemote.Router
         {
             ResponseResult result = null;
 
-            var worker = client.ReceiveAsync();
+            var worker = _client.ReceiveAsync();
             var task = await Task.WhenAny(worker, Task.Delay(Timeout));
 
             if (task == worker)
@@ -31,7 +31,7 @@ namespace AdsRemote.Router
             }
             else
             {
-                client.Close();
+                _client.Close();
             }
 
             return result;
@@ -43,7 +43,7 @@ namespace AdsRemote.Router
             int start = Environment.TickCount;
             while (true)
             {
-                var worker = client.ReceiveAsync();
+                var worker = _client.ReceiveAsync();
                 var task = await Task.WhenAny(worker, Task.Delay(Timeout));
 
                 long interval = (long)TimeSpan.FromTicks(Environment.TickCount - start).TotalMilliseconds - start;
@@ -54,7 +54,7 @@ namespace AdsRemote.Router
                 }
                 else
                 {
-                    client.Close();
+                    _client.Close();
                     break;
                 }
             }

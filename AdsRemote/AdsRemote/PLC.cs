@@ -8,89 +8,91 @@ using TwinCAT.Ads;
 
 namespace AdsRemote
 {
-    public class PLC : IDisposable, INotifyPropertyChanged
+    public class Plc : IDisposable, INotifyPropertyChanged
     {
         public readonly AmsRouter Router;
 
-        private Dictionary<int, AdsDevice> dict_PortDevice = new Dictionary<int, AdsDevice>();
-        private readonly object _locker_dict_PortDevice = new object();
-        private Dictionary<string, Var> dict_NameVar = new Dictionary<string, Var>();
+        private readonly Dictionary<int, AdsDevice> _dictPortDevice = new Dictionary<int, AdsDevice>();
+        private readonly object _lockerDictPortDevice = new object();
+        private readonly Dictionary<string, Var> _dictNameVar = new Dictionary<string, Var>();
 
-        Thread pingThread;
-        CancellationTokenSource cancelTokenSource;
+        Thread _pingThread;
+        CancellationTokenSource _cancelTokenSource;
         SynchronizationContext _uiContext;  // TODO to refactor
 
         #region Default Runtimes
+        // ReSharper disable once UnusedMember.Global
         public AdsDevice Runtime1
         {
             get
             {
-                AdsDevice d = null;
-                dict_PortDevice.TryGetValue((int)AmsPort3.PlcRuntime1, out d);
+                _dictPortDevice.TryGetValue((int)AmsPort3.PlcRuntime1, out var d);
                 return d;
             }
         }
+        // ReSharper disable once UnusedMember.Global
         public AdsDevice Runtime2
         {
             get
             {
-                AdsDevice d = null;
-                dict_PortDevice.TryGetValue((int)AmsPort3.PlcRuntime2, out d);
+                _dictPortDevice.TryGetValue((int)AmsPort3.PlcRuntime2, out var d);
                 return d;
             }
         }
+        // ReSharper disable once UnusedMember.Global
         public AdsDevice Runtime3
         {
             get
             {
-                AdsDevice d = null;
-                dict_PortDevice.TryGetValue((int)AmsPort3.PlcRuntime3, out d);
+                _dictPortDevice.TryGetValue((int)AmsPort3.PlcRuntime3, out var d);
                 return d;
             }
         }
+        // ReSharper disable once UnusedMember.Global
         public AdsDevice Runtime4
         {
             get
             {
-                AdsDevice d = null;
-                dict_PortDevice.TryGetValue((int)AmsPort3.PlcRuntime4, out d);
+                _dictPortDevice.TryGetValue((int)AmsPort3.PlcRuntime4, out var d);
                 return d;
             }
         }
         #endregion
 
-        public int Tune_PingSleepInterval = 1;      // How long ping thread sleeps between iterations
-        public int Tune_ReinitInterval = 100;       // Interval after connection but before vars subscription
+        public int TunePingSleepInterval = 1;      // How long ping thread sleeps between iterations
+        public int TuneReinitInterval = 100;       // Interval after connection but before vars subscription
 
-        private int tune_AdsClientTimeout = 1000;   // I/O operations timeout
-        public int Tune_AdsClientTimeout
+        private int _tuneAdsClientTimeout = 1000;   // I/O operations Meintimeout
+        // ReSharper disable once UnusedMember.Global
+        public int TuneAdsClientTimeout
         {
-            get { return tune_AdsClientTimeout; }
+            get => _tuneAdsClientTimeout;
 
             set
             {
-                tune_AdsClientTimeout = value;
+                _tuneAdsClientTimeout = value;
 
                 List<AdsDevice> devices = new List<AdsDevice>();
-                lock (_locker_dict_PortDevice)
+                lock (_lockerDictPortDevice)
                 {
-                    if (devices.Count != dict_PortDevice.Values.Count)
-                        devices = new List<AdsDevice>(dict_PortDevice.Values);
+                    if (devices.Count != _dictPortDevice.Values.Count)
+                        devices = new List<AdsDevice>(_dictPortDevice.Values);
                 }
 
                 foreach (AdsDevice device in devices)
-                    device.AdsClient.Timeout = tune_AdsClientTimeout;
+                    device.AdsClient.Timeout = _tuneAdsClientTimeout;
             } // set
         }
 
         #region ctor
-        public PLC(AmsNetId amsNetId)
+        // ReSharper disable once UnusedMember.Global
+        public Plc(AmsNetId amsNetId)
         {
             Router = new AmsRouter(amsNetId);
             ctor_initialize();
         }
 
-        public PLC(string amsNetId)
+        public Plc(string amsNetId)
         {
             Router = new AmsRouter(new AmsNetId(amsNetId));
             ctor_initialize();
@@ -98,11 +100,10 @@ namespace AdsRemote
 
         private void ctor_initialize()
         {
-            cancelTokenSource = new CancellationTokenSource();
+            _cancelTokenSource = new CancellationTokenSource();
             SynchronizationContext uiContext = SynchronizationContext.Current;
-            pingThread = new Thread(() => PingThread(cancelTokenSource.Token, uiContext));
-            pingThread.IsBackground = true;
-            pingThread.Start();
+            _pingThread = new Thread(() => PingThread(_cancelTokenSource.Token, uiContext)) {IsBackground = true};
+            _pingThread.Start();
         }
         #endregion
 
@@ -116,10 +117,10 @@ namespace AdsRemote
                 if (token.IsCancellationRequested)
                     break;
 
-                lock (_locker_dict_PortDevice)
+                lock (_lockerDictPortDevice)
                 {
-                    if (devices.Count != dict_PortDevice.Values.Count)
-                        devices = new List<AdsDevice>(dict_PortDevice.Values);
+                    if (devices.Count != _dictPortDevice.Values.Count)
+                        devices = new List<AdsDevice>(_dictPortDevice.Values);
                 }
 
                 foreach (AdsDevice device in devices)
@@ -140,7 +141,10 @@ namespace AdsRemote
 
                             isActive = true;
                         }
-                        catch { }
+                        catch (Exception)
+                        {
+                            // ignored
+                        }
 
                         if (isActive && (!device.Ready) || (!isActive) && device.Ready)
                             updateList.Add(device);
@@ -151,7 +155,7 @@ namespace AdsRemote
                 } // foreach (AdsDevice device in devices)
 
                 if (!token.IsCancellationRequested)
-                    Thread.Sleep(updateList.Count > 0 ? Tune_ReinitInterval : Tune_PingSleepInterval);
+                    Thread.Sleep(updateList.Count > 0 ? TuneReinitInterval : TunePingSleepInterval);
 
                 foreach (AdsDevice device in updateList)
                 {
@@ -191,15 +195,16 @@ namespace AdsRemote
         public event EventHandler<AdsDevice> DeviceLost;
         public event PropertyChangedEventHandler PropertyChanged;
 
+        // ReSharper disable once UnusedMember.Global
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChangedEventHandler pceh = PropertyChanged;
             pceh?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected virtual void OnDeviceLost(object obj_Device)
+        protected virtual void OnDeviceLost(object objDevice)
         {
-            AdsDevice device = (AdsDevice)obj_Device;
+            AdsDevice device = (AdsDevice)objDevice;
 
             foreach (Var v in device.Vars)
                 v.TryUnsubscribe();
@@ -208,9 +213,9 @@ namespace AdsRemote
             handle?.Invoke(this, device);
         }
 
-        protected virtual void OnDeviceReady(object obj_Device)
+        protected virtual void OnDeviceReady(object objDevice)
         {
-            AdsDevice device = (AdsDevice)obj_Device;
+            AdsDevice device = (AdsDevice)objDevice;
 
             foreach (Var var in device.Vars)
             {
@@ -230,81 +235,80 @@ namespace AdsRemote
         #endregion
 
         #region PLC Variables and Class
-        private AdsDevice GetDevice(int Port)
+        private AdsDevice GetDevice(int port)
         {
-            AdsDevice device;
-
-            if (!dict_PortDevice.TryGetValue(Port, out device))
+            if (!_dictPortDevice.TryGetValue(port, out var device))
             {
-                device = new AdsDevice(Router.AmsNetId, Port);
-                device.AdsClient.Timeout = tune_AdsClientTimeout;
+                device = new AdsDevice(Router.AmsNetId, port);
+                device.AdsClient.Timeout = _tuneAdsClientTimeout;
                 device.AdsClient.AdsNotificationEx += Client_AdsNotificationEx;
                 device.UiContext = _uiContext;
 
-                lock (_locker_dict_PortDevice)
-                    dict_PortDevice.Add(Port, device);
+                lock (_lockerDictPortDevice)
+                    _dictPortDevice.Add(port, device);
             }
 
             return device;
         }
 
-        private Var<T> CreateVariable<T>(string varName, int Port)
+        private Var<T> CreateVariable<T>(string varName, int port)
         {
-            Var v;
-            if (dict_NameVar.TryGetValue(varName, out v))
+            if (_dictNameVar.TryGetValue(varName, out var v))
                 return (Var<T>)v;
 
-            AdsDevice device = GetDevice(Port);
+            AdsDevice device = GetDevice(port);
 
             Var<T> var = new Var<T>(varName, device);
             device.Vars.Add(var);
-            dict_NameVar.Add(varName, var);
+            _dictNameVar.Add(varName, var);
 
             var.TrySubscribe();
 
             return var;
         }
 
-        private Var<T> CreateVariable<T>(long IGrp, long IOffs, int Port)
+        private Var<T> CreateVariable<T>(long grp, long offs, int port)
         {
-            string pseudoName = string.Concat(IGrp.ToString(), ":", IOffs.ToString());
+            string pseudoName = string.Concat(grp.ToString(), ":", offs.ToString());
 
-            Var v;
-            if (dict_NameVar.TryGetValue(pseudoName, out v))
+            if (_dictNameVar.TryGetValue(pseudoName, out var v))
                 return (Var<T>)v;
 
-            AdsDevice device = GetDevice(Port);
+            AdsDevice device = GetDevice(port);
 
-            Var<T> var = new Var<T>(IGrp, IOffs, device);
+            Var<T> var = new Var<T>(grp, offs, device);
             device.Vars.Add(var);
-            dict_NameVar.Add(pseudoName, var);
+            _dictNameVar.Add(pseudoName, var);
 
             var.TrySubscribe();
 
             return var;
         }
 
-        public Var<T> Var<T>(string Variable, int Port)
+        public Var<T> Var<T>(string variable, int port)
         {
-            return CreateVariable<T>(Variable, Port);
+            return CreateVariable<T>(variable, port);
         }
 
-        public Var<T> Var<T>(long IGrp, long IOffs, int Port)
+        // ReSharper disable once UnusedMember.Global
+        public Var<T> Var<T>(long grp, long offs, int port)
         {
-            return CreateVariable<T>(IGrp, IOffs, Port);
+            return CreateVariable<T>(grp, offs, port);
         }
 
-        public Var<T> Var<T>(string Variable)
+        // ReSharper disable once UnusedMember.Global
+        public Var<T> Var<T>(string variable)
         {
-            return Var<T>(Variable, (int)AmsPort3.PlcRuntime1);
+            return Var<T>(variable, (int)AmsPort3.PlcRuntime1);
         }
 
-        public Var<T> Var<T>(string Variable, AmsPort3 Port)
+        // ReSharper disable once UnusedMember.Global
+        public Var<T> Var<T>(string variable, AmsPort3 port)
         {
-            return Var<T>(Variable, (int)Port);
+            return Var<T>(variable, (int)port);
         }
 
-        public T Class<T>(T instance = default(T)) where T : new()
+        public T Class<T>(T instance = default) where T : new()
         {
             T o =
                 instance == null ?
@@ -318,25 +322,20 @@ namespace AdsRemote
                 LinkedToAttribute la = pr.GetCustomAttribute<LinkedToAttribute>();
                 if (la != null)
                 {
-                    Type t = null;
-
-                    if (pr.PropertyType.IsGenericType)
-                        t = pr.PropertyType.GetGenericArguments()[0];
-                    else
-                        t = la.As;
+                    var t = pr.PropertyType.IsGenericType ? pr.PropertyType.GetGenericArguments()[0] : la.As;
 
                     if (t != null)
                     {
-                        object v = null;
-                        if (la.IGrp > -1 && la.IOffs > -1)
+                        object v;
+                        if (la.Grp > -1 && la.Offs > -1)
                         {
-                            MethodInfo mi = this.GetType().GetMethod("Var", new Type[] { typeof(long), typeof(long), typeof(int) }).MakeGenericMethod(t);
-                            v = mi.Invoke(this, new object[] { la.IGrp, la.IOffs, la.Port });
+                            MethodInfo mi = this.GetType().GetMethod("Var", new[] { typeof(long), typeof(long), typeof(int) })?.MakeGenericMethod(t);
+                            v = mi?.Invoke(this, new object[] { la.Grp, la.Offs, la.Port });
                         }
                         else
                         {
-                            MethodInfo mi = this.GetType().GetMethod("Var", new Type[] { typeof(string), typeof(int) }).MakeGenericMethod(t);
-                            v = mi.Invoke(this, new object[] { la.To, la.Port });
+                            MethodInfo mi = this.GetType().GetMethod("Var", new[] { typeof(string), typeof(int) })?.MakeGenericMethod(t);
+                            v = mi?.Invoke(this, new object[] { la.To, la.Port });
                         }
 
                         if (v != null)
@@ -353,25 +352,20 @@ namespace AdsRemote
                 LinkedToAttribute la = fi.GetCustomAttribute<LinkedToAttribute>();
                 if (la != null)
                 {
-                    Type t = null;
-
-                    if (fi.FieldType.IsGenericType)
-                        t = fi.FieldType.GetGenericArguments()[0];
-                    else
-                        t = la.As;
+                    var t = fi.FieldType.IsGenericType ? fi.FieldType.GetGenericArguments()[0] : la.As;
 
                     if (t != null)
                     {
-                        object v = null;
-                        if (la.IGrp > -1 && la.IOffs > -1)
+                        object v;
+                        if (la.Grp > -1 && la.Offs > -1)
                         {
-                            MethodInfo mi = this.GetType().GetMethod("Var", new Type[] { typeof(long), typeof(long), typeof(int) }).MakeGenericMethod(t);
-                            v = mi.Invoke(this, new object[] { la.IGrp, la.IOffs, la.Port });
+                            MethodInfo mi = this.GetType().GetMethod("Var", new[] { typeof(long), typeof(long), typeof(int) })?.MakeGenericMethod(t);
+                            v = mi?.Invoke(this, new object[] { la.Grp, la.Offs, la.Port });
                         }
                         else
                         {
-                            MethodInfo mi = this.GetType().GetMethod("Var", new Type[] { typeof(string), typeof(int) }).MakeGenericMethod(t);
-                            v = mi.Invoke(this, new object[] { la.To, la.Port });
+                            MethodInfo mi = this.GetType().GetMethod("Var", new[] { typeof(string), typeof(int) })?.MakeGenericMethod(t);
+                            v = mi?.Invoke(this, new object[] { la.To, la.Port });
                         }
 
                         if (v != null)
@@ -395,11 +389,10 @@ namespace AdsRemote
         {
             if (disposing)
             {
-                foreach (Var v in dict_NameVar.Values)
+                foreach (Var v in _dictNameVar.Values)
                     v.TryUnsubscribe();
 
-                if (cancelTokenSource != null)
-                    cancelTokenSource.Cancel();
+                _cancelTokenSource?.Cancel();
             }
         }
     } // class

@@ -13,6 +13,6 @@ namespace AdsRemote.Router
         public AdsVersion TcVersion = new AdsVersion();
         public bool IsRuntime = false;
 
-        public string TcVersionString { get { return TcVersion.Version.ToString() + "." + TcVersion.Revision.ToString() + "." + TcVersion.Build.ToString(); } }
+        public string TcVersionString => TcVersion.Version.ToString() + "." + TcVersion.Revision.ToString() + "." + TcVersion.Build.ToString();
     }
 }

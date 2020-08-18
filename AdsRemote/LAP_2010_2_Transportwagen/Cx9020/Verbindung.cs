@@ -23,7 +23,7 @@ namespace LAP_2010_2_Transportwagen.Cx9020
 
             _lokaleIpAdresseFalsch = LokaleIpAdresseTesten(ipAdressen.AmsNetIdPc);
 
-            var plc = new AdsRemote.PLC(ipAdressen.AmsNetIdSps) { Tune_ReinitInterval = 2 };
+            var plc = new AdsRemote.Plc(ipAdressen.AmsNetIdSps) { TuneReinitInterval = 2 };
             plc.DeviceReady += PlcDeviceReady;
             plc.DeviceLost += PlcDeviceLost;
 

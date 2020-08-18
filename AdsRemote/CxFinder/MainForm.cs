@@ -13,9 +13,9 @@ namespace CxFinder
 {
     public partial class MainForm : Form
     {
-        const string APP_NAME = "CxFinder";
-        const string STATUS_READY = "Ready";
-        const string STATUS_SEARCHING = "Searching...";
+        const string AppName = "CxFinder";
+        const string StatusReady = "Ready";
+        const string StatusSearching = "Searching...";
 
         public MainForm()
         {
@@ -33,10 +33,10 @@ namespace CxFinder
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            Text = APP_NAME + AppShortVersion;
+            Text = AppName + AppShortVersion;
 
             FormNiCombo();
-            statusStatusLabel.Text = STATUS_READY;
+            statusStatusLabel.Text = StatusReady;
         }
 
         private void FormNiCombo()
@@ -59,9 +59,11 @@ namespace CxFinder
                 {
                     if (unicastInfo.Address.AddressFamily == AddressFamily.InterNetwork)
                     {
-                        ComboBoxItem item = new ComboBoxItem();
-                        item.Text = string.Concat(ni.Name, " (", unicastInfo.Address.ToString(), ")");
-                        item.Value = unicastInfo.Address;
+                        ComboBoxItem item = new ComboBoxItem
+                        {
+                            Text = string.Concat(ni.Name, " (", unicastInfo.Address.ToString(), ")"),
+                            Value = unicastInfo.Address
+                        };
                         niComboBox.Items.Add(item);
                     }
                 }
@@ -85,7 +87,7 @@ namespace CxFinder
             if (niComboBox.SelectedIndex < 0)
                 return;
 
-            statusStatusLabel.Text = STATUS_SEARCHING;
+            statusStatusLabel.Text = StatusSearching;
 
             int timeout = (int)timeoutNumericUpDown.Value;
             searchStatusProgressBar.Maximum = timeout;
@@ -109,7 +111,7 @@ namespace CxFinder
             {
                 ListViewItem lvi =
                     new ListViewItem(
-                        new string[]
+                        new[]
                         {
                             info.Name,
                             info.Address.ToString(),
@@ -132,7 +134,7 @@ namespace CxFinder
             searchStatusProgressBar.Visible = false;
             searchProgressTimer.Enabled = false;
 
-            statusStatusLabel.Text = STATUS_READY;
+            statusStatusLabel.Text = StatusReady;
         }
 
         private void searchProgressTimer_Tick(object sender, EventArgs e)

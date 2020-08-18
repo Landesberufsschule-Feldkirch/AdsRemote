@@ -6,7 +6,7 @@ using System.Net.Sockets;
 
 namespace AdsRemote
 {
-    public static class IPHelper
+    public static class IpHelper
     {
         public static IPAddress GetBroadcastAddress(IPAddress localhost)
         {
@@ -53,7 +53,8 @@ namespace AdsRemote
             return null;
         }
 
-        public static List<IPAddress> Localhosts { get { return FilteredLocalhosts(null); } }
+        // ReSharper disable once UnusedMember.Global
+        public static List<IPAddress> Localhosts => FilteredLocalhosts();
 
         public static List<IPAddress> FilteredLocalhosts(List<NetworkInterfaceType> niTypes = null)
         {

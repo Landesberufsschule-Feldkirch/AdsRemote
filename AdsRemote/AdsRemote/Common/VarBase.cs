@@ -5,7 +5,7 @@ namespace AdsRemote.Common
 {
     public abstract class Var : IDisposable, INotifyPropertyChanged
     {
-        public string Name { get { return RemoteName; } }
+        public string Name => RemoteName;
         protected int NotifyHandle = -1;
 
         internal AdsDevice Device;
@@ -13,15 +13,15 @@ namespace AdsRemote.Common
         internal long IndexGroup = -1;
         internal long IndexOffset = -1;
 
-        abstract internal bool TrySubscribe();
-        abstract internal bool TryUnsubscribe();
-        abstract internal void SetInternalValue(object value);
-        abstract public object GetValue();
-        abstract public Type ValueType { get; }
+        internal abstract bool TrySubscribe();
+        internal abstract bool TryUnsubscribe();
+        internal abstract void SetInternalValue(object value);
+        public abstract object GetValue();
+        public abstract Type ValueType { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        abstract public event EventHandler<Var> ValueChanged;
-        abstract protected void OnValueChanged();
+        public abstract event EventHandler<Var> ValueChanged;
+        protected abstract void OnValueChanged();
 
         protected void OnPropertyChanged(string propertyName)
         {

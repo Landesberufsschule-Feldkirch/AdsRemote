@@ -3,51 +3,86 @@
     /// <summary>
     /// TwinCAT 3 ADS Ports
     /// </summary>
-    public enum AmsPort3 : int
+    public enum AmsPort3
     {
         Router = 1,
         Debugger = 2,
         Logger = 100,
         EventLog = 110,
-        R0_Realtime = 200,
-        R0_Trace = 290,
-        R0_IO = 350,
-        R0_AdditionalTask1 = 350,
-        R0_AdditionalTask2 = 351,
-        R0_NC = 500,
-        R0_NCSAF = 501,
-        R0_NCSVB = 511,
-        R0_ISG = 550,
-        R0_CNC = 600,
-        R0_LINE = 700,
-        R0_PLC = 800,
+        // ReSharper disable once UnusedMember.Global
+        R0Realtime = 200,
+        // ReSharper disable once UnusedMember.Global
+        R0Trace = 290,
+        // ReSharper disable once UnusedMember.Global
+        R0Io = 350,
+        // ReSharper disable once UnusedMember.Global
+        R0AdditionalTask1 = 350,
+        // ReSharper disable once UnusedMember.Global
+        R0AdditionalTask2 = 351,
+        // ReSharper disable once UnusedMember.Global
+        R0Nc = 500,
+        // ReSharper disable once UnusedMember.Global
+        R0Ncsaf = 501,
+        // ReSharper disable once UnusedMember.Global
+        R0Ncsvb = 511,
+        // ReSharper disable once UnusedMember.Global
+        R0Isg = 550,
+        // ReSharper disable once UnusedMember.Global
+        R0Cnc = 600,
+        // ReSharper disable once UnusedMember.Global
+        R0Line = 700,
+        // ReSharper disable once UnusedMember.Global
+        R0Plc = 800,
         PlcRuntime1 = 851,
         PlcRuntime2 = 852,
         PlcRuntime3 = 853,
         PlcRuntime4 = 854,
+        // ReSharper disable once UnusedMember.Global
         CamshaftController = 900,
-        R0_CAMTOOL = 950,
-        R0_USER = 2000,
-        R3_CTRLPROG = 10000,
+        // ReSharper disable once UnusedMember.Global
+        R0Camtool = 950,
+        // ReSharper disable once UnusedMember.Global
+        R0User = 2000,
+        // ReSharper disable once UnusedMember.Global
+        R3Ctrlprog = 10000,
         SystemService = 10000,
-        R3_SYSCTRL = 10001,
-        R3_SYSSAMPLER = 10100,
-        R3_TCPRAWCONN = 10200,
-        R3_TCPIPSERVER = 10201,
-        R3_SYSMANAGER = 10300,
-        R3_SMSSERVER = 10400,
-        R3_MODBUSSERVER = 10500,
-        R3_S7SERVER = 10600,
-        R3_PLCCONTROL = 10800,
-        R3_NCCTRL = 11000,
-        R3_NCINTERPRETER = 11500,
-        R3_STRECKECTRL = 12000,
-        R3_CAMCTRL = 13000,
-        R3_SCOPE = 14000,
-        R3_SINECH1 = 15000,
-        R3_CONTROLNET = 16000,
-        R3_OPCSERVER = 17000,
-        R3_OPCCLIENT = 17500,
-        USEDEFAULT = 65535
+        // ReSharper disable once UnusedMember.Global
+        R3Sysctrl = 10001,
+        // ReSharper disable once UnusedMember.Global
+        R3Syssampler = 10100,
+        // ReSharper disable once UnusedMember.Global
+        R3Tcprawconn = 10200,
+        // ReSharper disable once UnusedMember.Global
+        R3Tcpipserver = 10201,
+        // ReSharper disable once UnusedMember.Global
+        R3Sysmanager = 10300,
+        // ReSharper disable once UnusedMember.Global
+        R3Smsserver = 10400,
+        // ReSharper disable once UnusedMember.Global
+        R3Modbusserver = 10500,
+        // ReSharper disable once UnusedMember.Global
+        R3S7Server = 10600,
+        // ReSharper disable once UnusedMember.Global
+        R3Plccontrol = 10800,
+        // ReSharper disable once UnusedMember.Global
+        R3Ncctrl = 11000,
+        // ReSharper disable once UnusedMember.Global
+        R3Ncinterpreter = 11500,
+        // ReSharper disable once UnusedMember.Global
+        R3Streckectrl = 12000,
+        // ReSharper disable once UnusedMember.Global
+        R3Camctrl = 13000,
+        // ReSharper disable once UnusedMember.Global
+        R3Scope = 14000,
+        // ReSharper disable once UnusedMember.Global
+        R3Sinech1 = 15000,
+        // ReSharper disable once UnusedMember.Global
+        R3Controlnet = 16000,
+        // ReSharper disable once UnusedMember.Global
+        R3Opcserver = 17000,
+        // ReSharper disable once UnusedMember.Global
+        R3Opcclient = 17500,
+        // ReSharper disable once UnusedMember.Global
+        Usedefault = 65535
     }
 }

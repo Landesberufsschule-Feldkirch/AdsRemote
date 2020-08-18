@@ -8,28 +8,27 @@ namespace AdsRemote.Router
 {
     internal class Request
     {
-        public const int DEFAULT_UDP_PORT = 48899;
+        public const int DefaultUdpPort = 48899;
 
-        UdpClient client;
-        public UdpClient Client { get { return client; } }
+        readonly UdpClient _client;
+        public UdpClient Client => _client;
 
-        public int timeout;
+        public int Meintimeout;
         public int Timeout
         {
-            get { return timeout; }
+            get => Meintimeout;
 
             set
             {
-                timeout = value;
-                client.Client.ReceiveTimeout = client.Client.SendTimeout = Timeout;
+                Meintimeout = value;
+                _client.Client.ReceiveTimeout = _client.Client.SendTimeout = Timeout;
             }
         }
 
         public Request(int timeout = 10000)
         {
-            client = new UdpClient();
-            client.EnableBroadcast = true;
-            client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            _client = new UdpClient {EnableBroadcast = true};
+            _client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 
             Timeout = timeout;
         }
@@ -37,25 +36,25 @@ namespace AdsRemote.Router
         public async Task<Response> SendAsync(IPEndPoint endPoint)
         {
             byte[] data = GetRequestBytes;
-            await client.SendAsync(data, data.Length, endPoint);
+            await _client.SendAsync(data, data.Length, endPoint);
 
-            return new Response(client, Timeout);
+            return new Response(_client, Timeout);
         }
 
-        List<byte[]> listOfBytes = new List<byte[]>();
+        readonly List<byte[]> _listOfBytes = new List<byte[]>();
         public byte[] GetRequestBytes
         {
-            get { return listOfBytes.SelectMany(a => a).ToArray(); }
+            get { return _listOfBytes.SelectMany(a => a).ToArray(); }
         }
 
         public void Add(byte[] segment)
         {
-            listOfBytes.Add(segment);
+            _listOfBytes.Add(segment);
         }
 
         public void Clear()
         {
-            listOfBytes.Clear();
+            _listOfBytes.Clear();
         }
     }
 }
