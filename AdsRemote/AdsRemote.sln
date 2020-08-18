@@ -12,8 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReadMe", "ReadMe", "{7CAD8C
 		ReadMe.txt = ReadMe.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{CF5E3D43-7DE8-4138-AB0B-60823734FACF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LAP_2010_2_Transportwagen", "LAP_2010_2_Transportwagen\LAP_2010_2_Transportwagen.csproj", "{0A61EDF6-1273-4A51-9722-16EB7C2F44E1}"
 EndProject
 Global
@@ -30,10 +28,6 @@ Global
 		{47388D82-CAED-48F5-88B6-592B721CA91B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47388D82-CAED-48F5-88B6-592B721CA91B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47388D82-CAED-48F5-88B6-592B721CA91B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CF5E3D43-7DE8-4138-AB0B-60823734FACF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF5E3D43-7DE8-4138-AB0B-60823734FACF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CF5E3D43-7DE8-4138-AB0B-60823734FACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF5E3D43-7DE8-4138-AB0B-60823734FACF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0A61EDF6-1273-4A51-9722-16EB7C2F44E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0A61EDF6-1273-4A51-9722-16EB7C2F44E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A61EDF6-1273-4A51-9722-16EB7C2F44E1}.Release|Any CPU.ActiveCfg = Release|Any CPU

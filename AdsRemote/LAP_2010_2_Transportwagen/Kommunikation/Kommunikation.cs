@@ -35,6 +35,9 @@ namespace LAP_2010_2_Transportwagen.Kommunikation
         /*************************************************************************************
         *                              AdsOutput 
         *************************************************************************************/
+        [LinkedTo("AdsOutput.VersionsInfo")]
+        public Var<string> VersionSps { get; set; }       // Versionsstring der SPS
+
         [LinkedTo("AdsOutput.TogglePC")]
         public Var<bool> TogglePc { get; set; } // ToggleBit PC
 
@@ -46,6 +49,7 @@ namespace LAP_2010_2_Transportwagen.Kommunikation
 
         [LinkedTo("AdsOutput.Q2")]
         public Var<bool> Q2 { get; set; }       // Motor RL
+
 
     }
 }

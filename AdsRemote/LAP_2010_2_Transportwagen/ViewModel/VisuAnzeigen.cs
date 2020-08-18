@@ -13,6 +13,10 @@
             _mainWindow = mw;
             _transportwagen = tw;
 
+            VersionNr = "V0.0";
+            SpsVersionsInfoSichtbar = "hidden";
+            SpsVersionLokal = "fehlt";
+            SpsVersionEntfernt = "fehlt";
             SpsStatus = "-";
             SpsColor = "LightBlue";
             LokaleAmsIdFalsch = "Hidden";
@@ -66,10 +70,17 @@
                 PositionRadRechts = _transportwagen.Position + _transportwagen.AbstandRadRechts + abstandRadWagen;
                 PositionWagenkasten = _transportwagen.Position;
 
+                SpsVersionLokal = _mainWindow.VersionInfo;
+                SpsVersionEntfernt = _mainWindow.Cx9020.Kommunikation.VersionSps.ToString();
+                SpsVersionsInfoSichtbar = SpsVersionLokal == SpsVersionEntfernt ? "hidden" : "visible";
+
                 SpsStatus = _mainWindow.Cx9020.GetStatus();
                 SpsColor = _mainWindow.Cx9020.GetFarbe();
 
                 _mainWindow.Cx9020.Kommunikation.TogglePc.RemoteValue = !_mainWindow.Cx9020.Kommunikation.TogglePc;
+
+
+
 
                 Thread.Sleep(10);
             }
@@ -83,8 +94,62 @@
 
         #region SPS Status und Farbe
 
-        private string _spsStatus;
+        private string _lokaleAmsIdFalsch;
+        public string LokaleAmsIdFalsch
+        {
+            get => _lokaleAmsIdFalsch;
+            set
+            {
+                _lokaleAmsIdFalsch = value;
+                OnPropertyChanged((nameof(LokaleAmsIdFalsch)));
+            }
+        }
 
+        private string _versionNr;
+        public string VersionNr
+        {
+            get => _versionNr;
+            set
+            {
+                _versionNr = value;
+                OnPropertyChanged(nameof(VersionNr));
+            }
+        }
+
+        private string _SpsVersionLokal;
+        public string SpsVersionLokal
+        {
+            get => _SpsVersionLokal;
+            set
+            {
+                _SpsVersionLokal = value;
+                OnPropertyChanged(nameof(SpsVersionLokal));
+            }
+        }
+
+        private string _SpsVersionEntfernt;
+        public string SpsVersionEntfernt
+        {
+            get => _SpsVersionEntfernt;
+            set
+            {
+                _SpsVersionEntfernt = value;
+                OnPropertyChanged(nameof(SpsVersionEntfernt));
+            }
+        }
+
+        private string _spsVersionsInfoSichtbar;
+        public string SpsVersionsInfoSichtbar
+        {
+            get => _spsVersionsInfoSichtbar;
+            set
+            {
+                _spsVersionsInfoSichtbar = value;
+                OnPropertyChanged(nameof(SpsVersionsInfoSichtbar));
+            }
+        }
+
+        private string _spsStatus;
         public string SpsStatus
         {
             get => _spsStatus;
@@ -96,7 +161,6 @@
         }
 
         private string _spsColor;
-
         public string SpsColor
         {
             get => _spsColor;
@@ -106,20 +170,6 @@
                 OnPropertyChanged(nameof(SpsColor));
             }
         }
-
-
-        private string _lokaleAmsIdFalsch;
-
-        public string LokaleAmsIdFalsch
-        {
-            get => _lokaleAmsIdFalsch;
-            set
-            {
-                _lokaleAmsIdFalsch = value;
-                OnPropertyChanged((nameof(LokaleAmsIdFalsch)));
-            }
-        }
-
 
         #endregion SPS Status und Farbe
 

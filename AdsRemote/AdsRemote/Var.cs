@@ -145,7 +145,7 @@ namespace AdsRemote
 
         public override string ToString()
         {
-            return internalValue.ToString();
+            return internalValue == null ? "" : internalValue.ToString();
         }
 
         public override object GetValue()
